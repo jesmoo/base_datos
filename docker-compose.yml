@@ -1,0 +1,43 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: mysql_container
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: /run/secrets/my_sql_root_password
+      MYSQL_DATABASE: /run/secrets/my_sql_database
+      MYSQL_USER: /run/secrets/my_sql_user
+      MYSQL_PASSWORD: /run/secrets/my_sql_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - /Users/jesmoo/escuela/base_datos/bd:/var/lib/mysql
+    networks:
+      - materia_base_datos
+
+  phpmyadmin:
+    container_name: phpmyadmin_container
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: /run/secrets/my_sql_root_password
+    networks:
+      - materia_base_datos
+
+networks:
+  materia_base_datos:
+
+secrets:
+  my_sql_root_password:
+    file: ./secrets/MYSQL_ROOT_PASSWORD.txt
+  my_sql_database:
+    file: ./secrets/MYSQL_DATABASE.txt
+  my_sql_user:
+    file: ./secrets/MYSQL_USER.txt
+  my_sql_password:
+    file: ./secrets/MYSQL_PASSWORD.txt
